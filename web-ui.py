@@ -39,7 +39,8 @@ from flask_login import (
     logout_user, current_user
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from pymodbus.client.sync import ModbusTcpClient
+from threading import Thread
 # ----------------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------------
@@ -220,23 +221,35 @@ MODBUS_SERVER_IP = '10.3.21.91'
 MODBUS_SERVER_PORT = 502
 UNIT_ID = 1
 
-from pymodbus.client.tcp import ModbusTcpClient
+# Global variable to store the latest Modbus data
+modbus_data = {}
 
-@app.route("/api/traffic")
-@login_required
-def api_traffic():
-    try:
-        client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)
-        if not client.connect():
-            print("Cannot connect to Modbus server.")
-        else:
-          # client.close()
-          data = read_traffic_coils(client)
-          print(data)  # For debugging
-          return jsonify({"ok": True, "data": data})
-    except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
+# Function to maintain a persistent connection and read data every 500 ms
+def modbus_worker():
+    global modbus_data
+    client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)  # Replace with your Modbus server IP and port
+    if client.connect():
+        print("Connected to Modbus server")
+        while True:
+            try:
+                # Read data (e.g., holding registers starting at address 0)
+                result = read_signals(client)  # Adjust address and count as needed
+                modbus_data = {"registers": result.registers}
+            except Exception as e:
+                print(f"Error: {e}")
+            time.sleep(0.5)  # Wait 500 ms before the next read
+    else:
+        print("Failed to connect to Modbus server")
+    client.close()
 
+# Start the Modbus worker in a separate thread
+Thread(target=modbus_worker, daemon=True).start()
+
+
+# API endpoint to serve the latest Modbus data
+@app.route('/api/traffic', methods=['GET'])
+def get_traffic():
+    return jsonify(modbus_data)
 
 @app.route("/write_flag", methods=["POST"]) 
 @login_required
@@ -394,17 +407,17 @@ DASHBOARD_HTML = r"""
       const pollMs = {{ poll_ms|int }};
 
       async function fetchTraffic() {
-        try {
-          const res = await fetch("{{ url_for('api_traffic') }}", { cache: 'no-store' });
-          const json = await res.json();
-          if (!json.ok) throw new Error(json.error || 'Unknown error');
-          renderCards(json.data);
-          setHeartbeat(true, 'Online');
-        } catch (err) {
-          console.error(err);
-          setHeartbeat(false, 'Error: ' + (err.message || 'offline'));
-        }
+      try {
+        const res = await fetch("/api/traffic", { cache: 'no-store' });
+        const json = await res.json();
+        if (!json.registers) throw new Error('No data received');
+        renderCards(json.registers); // Update UI with the Modbus data
+        setHeartbeat(true, 'Online');
+      } catch (err) {
+        console.error(err);
+        setHeartbeat(false, 'Error: ' + (err.message || 'offline'));
       }
+    }
 
       function renderCards(items) {
         const host = document.getElementById('cards');
@@ -442,9 +455,8 @@ DASHBOARD_HTML = r"""
         txt.textContent = text;
       }
 
-      // Polling loop
-      fetchTraffic();
-      setInterval(fetchTraffic, pollMs);
+      // pull data every 300 ms
+      setInterval(fetchTraffic, 300);
 
       // Flag coil write
       document.getElementById('flag-form').addEventListener('submit', async (e) => {
