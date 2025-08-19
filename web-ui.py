@@ -39,8 +39,9 @@ from flask_login import (
     logout_user, current_user
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-from pymodbus.client.sync import ModbusTcpClient
+from pymodbus.client.tcp import ModbusTcpClient
 from threading import Thread
+import time
 # ----------------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------------
