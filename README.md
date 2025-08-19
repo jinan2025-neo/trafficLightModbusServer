@@ -1,4 +1,11 @@
-
+## Quick Setup
+1. Clone this project
+2. Install pipenv for quick setup (no need to install in Global, can be inside your virtual env)
+```terminal
+pip install pipenv
+pipenv install  # install dependency from the requirement list of Pipenv file
+pipenv shell    # activate the env
+```
 ## OpenPLC 
 ### Coil Mapping
 Raspberry Pi to OpenPLC mapping: (see default mapping of raspberry to openplc to know exact pin to put)
