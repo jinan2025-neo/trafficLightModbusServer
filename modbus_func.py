@@ -20,6 +20,18 @@ signal_widgets = {}
 layout_order = ['N', 'EW', 'S']
 colors = ['red', 'orange', 'green']
 
+
+def write_flag(client, value):
+    '''write the rush mode control flag into the given boolean value'''
+    result = client.write_coil(800, False)
+
+    if result.isError():
+        print('failed to write to coil 800')
+        return False
+    else:
+        print('successed')
+        return True
+
 def read_signals(client):
     """
     Read 9 coil values from Modbus and return as dict.

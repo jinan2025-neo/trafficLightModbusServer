@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 # self-defined function that calls pymodbus to read the traffic light coils from the server
-from modbus_func import read_signals
+from modbus_func import read_signals, write_flag
 
 from flask import (
     Flask, render_template_string, request, redirect, url_for,
@@ -161,16 +161,15 @@ def read_traffic_coils(client) -> List[Dict[str, Any]]:
     # --- END STUB ---
 
 
-def write_flag_coil(value: bool) -> bool:
+def write_flag_coil(client, value: bool) -> bool:
     """Write a single flag coil.
 
     Returns True on success, False otherwise.
 
-    TODO: Replace with actual pymodbus write_coil() call to your device.
     """
     # --- BEGIN STUB ---
     # Simulate success
-    return True
+    return write_flag(client, value)
     # --- END STUB ---
 
 
@@ -228,13 +227,13 @@ modbus_data = {}
 # Function to maintain a persistent connection and read data every 500 ms
 def modbus_worker():
     global modbus_data
-    client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)  # Replace with your Modbus server IP and port
-    if client.connect():
+    global global_client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)  # Replace with your Modbus server IP and port
+    if global_client.connect():
         print("Connected to Modbus server")
         while True:
             try:
                 # Read data (e.g., holding registers starting at address 0)
-                result = read_signals(client)  # Adjust address and count as needed
+                result = read_signals(global_client)  # Adjust address and count as needed
                 modbus_data = {"registers": result}
                 # print(result)
             except Exception as e:
@@ -242,7 +241,7 @@ def modbus_worker():
             time.sleep(0.5)  # Wait 500 ms before the next read
     else:
         print("Failed to connect to Modbus server")
-    client.close()
+    global_client.close()
 
 # Start the Modbus worker in a separate thread
 Thread(target=modbus_worker, daemon=True).start()
@@ -259,7 +258,7 @@ def write_flag():
     try:
         raw = request.form.get("flag") or request.json.get("flag") if request.is_json else None
         val = str(raw).lower() in {"1", "true", "on", "yes"}
-        ok = write_flag_coil(val)
+        ok = write_flag_coil(global_client,val)
         if not ok:
             return jsonify({"ok": False, "error": "Write coil failed"}), 500
         return jsonify({"ok": True, "value": val})
