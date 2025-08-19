@@ -1,3 +1,7 @@
+## Introduction
+This web app provide a dashboard for the Lego city's traffic light system to both monitoring the coil states and also allowed to switch between the rush mode and unrush mode (default is unrush).
+
+
 ## Quick Setup
 1. Clone this project
 2. Install pipenv for quick setup (no need to install in Global, can be inside your virtual env)
