@@ -27,6 +27,9 @@ from contextlib import closing
 from pathlib import Path
 from typing import Dict, Any, List
 
+# self-defined function that calls pymodbus to read the traffic light coils from the server
+import modbus-func
+
 from flask import (
     Flask, render_template_string, request, redirect, url_for,
     flash, jsonify, session, abort, render_template
@@ -43,7 +46,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "users.db"
 SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
-POLL_MS = int(os.environ.get("POLL_MS", "1500"))  # client refresh interval
+POLL_MS = int(os.environ.get("POLL_MS", "500"))  # client refresh interval: 500ms
 
 app = Flask(__name__)
 app.config.update(SECRET_KEY=SECRET_KEY)
@@ -144,7 +147,7 @@ def read_traffic_coils() -> List[Dict[str, Any]]:
 
     Expected structure per intersection:
     {
-      "name": "Junction A",
+      "direction": "Junction A",
       "address": 1,  # (optional) starting coil address
       "coils": {"red": True, "amber": False, "green": False}
     }
@@ -152,12 +155,7 @@ def read_traffic_coils() -> List[Dict[str, Any]]:
     TODO: Replace with actual pymodbus read_coils() calls based on your mapping.
     """
     # --- BEGIN STUB ---
-    demo = [
-        {"name": "Junction A", "address": 100, "coils": {"red": True,  "amber": False, "green": False}},
-        {"name": "Junction B", "address": 110, "coils": {"red": False, "amber": True,  "green": False}},
-        {"name": "Junction C", "address": 120, "coils": {"red": False, "amber": False, "green": True}},
-    ]
-    return demo
+    return modbus-func.read_signals(modbus-func.client)
     # --- END STUB ---
 
 
@@ -409,7 +407,7 @@ DASHBOARD_HTML = r"""
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
-                    <h5 class="card-title mb-1">${x.name || 'Intersection ' + (idx+1)}</h5>
+                    <h5 class="card-title mb-1">${x.direction || 'Intersection ' + (idx+1)}</h5>
                     <div class="muted small">Addr: ${x.address ?? '—'}</div>
                   </div>
                 </div>
