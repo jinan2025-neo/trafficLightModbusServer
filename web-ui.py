@@ -236,6 +236,7 @@ def modbus_worker():
                 # Read data (e.g., holding registers starting at address 0)
                 result = read_signals(client)  # Adjust address and count as needed
                 modbus_data = {"registers": result}
+                # print(result)
             except Exception as e:
                 print(f"Error: {e}")
             time.sleep(0.5)  # Wait 500 ms before the next read
@@ -388,8 +389,8 @@ DASHBOARD_HTML = r"""
 
       <div class="card bg-dark border-0 mt-4">
         <div class="card-body">
-          <h5 class="card-title">Flag Coil</h5>
-          <p class="muted">Write a boolean coil (e.g., maintenance mode, emergency stop, etc.).</p>
+          <h5 class="card-title text-white">Flag Coil</h5>
+          <p class="muted">Change to rush mode (can be extented to more e.g., maintenance mode, emergency stop, etc.).</p>
           <form id="flag-form" class="d-flex align-items-center gap-2">
             <select class="form-select w-auto" id="flag-value">
               <option value="true">ON (True)</option>
@@ -434,7 +435,7 @@ DASHBOARD_HTML = r"""
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
-                    <h5 class="card-title mb-1">${x.direction || 'Intersection ' + (idx+1)}</h5>
+                    <h5 class="card-title mb-1 text-white">${x.direction ?? 'Intersection ' + (idx+1)}</h5>
                     <div class="muted small">Addr: ${x.address ?? '—'}</div>
                   </div>
                 </div>
