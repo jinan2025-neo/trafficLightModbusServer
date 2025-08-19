@@ -234,7 +234,7 @@ def modbus_worker():
             try:
                 # Read data (e.g., holding registers starting at address 0)
                 result = read_signals(client)  # Adjust address and count as needed
-                modbus_data = {"registers": result.registers}
+                modbus_data = {"registers": result}
             except Exception as e:
                 print(f"Error: {e}")
             time.sleep(0.5)  # Wait 500 ms before the next read
