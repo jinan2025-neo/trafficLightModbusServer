@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 # self-defined function that calls pymodbus to read the traffic light coils from the server
-import modbus-func
+from modbus_func import read_signals
 
 from flask import (
     Flask, render_template_string, request, redirect, url_for,
@@ -142,7 +142,7 @@ def load_user(user_id: str):
 # Keep the return structures stable so the UI keeps working.
 
 
-def read_traffic_coils() -> List[Dict[str, Any]]:
+def read_traffic_coils(client) -> List[Dict[str, Any]]:
     """Return a list of intersections with coil states.
 
     Expected structure per intersection:
@@ -155,7 +155,7 @@ def read_traffic_coils() -> List[Dict[str, Any]]:
     TODO: Replace with actual pymodbus read_coils() calls based on your mapping.
     """
     # --- BEGIN STUB ---
-    return modbus-func.read_signals(modbus-func.client)
+    return modbus_func.read_signals(client)
     # --- END STUB ---
 
 
@@ -215,12 +215,25 @@ def logout():
     return redirect(url_for("login"))
 
 
+# Modbus server settings
+MODBUS_SERVER_IP = '10.3.21.91'
+MODBUS_SERVER_PORT = 502
+UNIT_ID = 1
+
+from pymodbus.client.tcp import ModbusTcpClient
+
 @app.route("/api/traffic")
 @login_required
 def api_traffic():
     try:
-        data = read_traffic_coils()
-        return jsonify({"ok": True, "data": data})
+        client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)
+        if not client.connect():
+            print("Cannot connect to Modbus server.")
+        else:
+          # client.close()
+          data = read_traffic_coils(client)
+          print(data)  # For debugging
+          return jsonify({"ok": True, "data": data})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 

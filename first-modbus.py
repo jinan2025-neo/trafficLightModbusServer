@@ -10,7 +10,7 @@ COIL_ADDRESS = 0  # Address of the coil to read (0-based)
 UNIT_ID = 1       # Usually 1 for Modbus TCP
 INTERVAL = 1      # Time interval in seconds
 def read_each_LEDs(client, time_interval=INTERVAL):
-    response = client.read_coils(address=COIL_ADDRESS, count=9, slave=UNIT_ID)
+    response = client.read_coils(address=COIL_ADDRESS, count=9, device_id=UNIT_ID)
     if response.isError():
         print("Error reading coil.")
     else:

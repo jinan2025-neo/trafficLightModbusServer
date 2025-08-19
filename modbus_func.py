@@ -1,7 +1,6 @@
 import time
 from pymodbus.client.tcp import ModbusTcpClient
 
-
 # Modbus server settings
 MODBUS_SERVER_IP = '10.3.21.91'
 MODBUS_SERVER_PORT = 502
@@ -25,29 +24,29 @@ def read_signals(client):
     """
     Read 9 coil values from Modbus and return as dict.
 
-    retrun in format:
+    return in format:
     demo = [
         {"direction": "N", "address": 0, "coils": {"red": True,  "amber": False, "green": False}},
         {"direction": "EW", "address": 3, "coils": {"red": False, "amber": True,  "green": False}},
         {"direction": "S", "address": 6, "coils": {"red": False, "amber": False, "green": True}},
     ]
     """
-    result = client.read_coils(address=0, count=9, slave=UNIT_ID)
-    if result.isError():
+    response = client.read_coils(address=0, count=9, device_id=UNIT_ID)
+    if response.isError():
         print("Modbus read error.")
-        return {}
-    result = []
+        return []
+    signals = []
     for i in range(0, 9, 3):
         direction = layout_order[i // 3]
         address = i
         coils = {
-            'red': result.bits[i],
-            'amber': result.bits[i + 1],
-            'green': result.bits[i + 2]
+            'red': response.bits[i],
+            'amber': response.bits[i + 1],
+            'green': response.bits[i + 2]
         }
-        result.append({"direction": direction, "address": address, "coils": coils})
+        signals.append({"direction": direction, "address": address, "coils": coils})
 
-    return result
+    return signals
     # return {SIGNAL_MAP[i].split()[0]: result.bits[i], 'direction': SIGNAL_MAP[i].split()[1], 'address':i for i in range(9)}
 
 
