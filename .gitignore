@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+
+# Flask
+instance/
+*.db
+
+# IDE Files
+.vscode/
+*.swp
