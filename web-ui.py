@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 # self-defined function that calls pymodbus to read the traffic light coils from the server
-from modbus_func import read_signals, write_flag
+from modbus_func import read_signals, write_flag_coil
 
 from flask import (
     Flask, render_template_string, request, redirect, url_for,
@@ -161,18 +161,6 @@ def read_traffic_coils(client) -> List[Dict[str, Any]]:
     # --- END STUB ---
 
 
-def write_flag_coil(client, value: bool) -> bool:
-    """Write a single flag coil.
-
-    Returns True on success, False otherwise.
-
-    """
-    # --- BEGIN STUB ---
-    # Simulate success
-    return write_flag(client, value)
-    # --- END STUB ---
-
-
 # ----------------------------------------------------------------------------
 # Routes
 # ----------------------------------------------------------------------------
@@ -227,7 +215,8 @@ modbus_data = {}
 # Function to maintain a persistent connection and read data every 500 ms
 def modbus_worker():
     global modbus_data
-    global global_client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)  # Replace with your Modbus server IP and port
+    global global_client 
+    global_client = ModbusTcpClient(MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT)  # Replace with your Modbus server IP and port
     if global_client.connect():
         print("Connected to Modbus server")
         while True:

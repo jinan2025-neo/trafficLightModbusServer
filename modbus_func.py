@@ -21,9 +21,9 @@ layout_order = ['N', 'EW', 'S']
 colors = ['red', 'orange', 'green']
 
 
-def write_flag(client, value):
+def write_flag_coil(client, value):
     '''write the rush mode control flag into the given boolean value'''
-    result = client.write_coil(800, False)
+    result = client.write_coil(800, value)
 
     if result.isError():
         print('failed to write to coil 800')
