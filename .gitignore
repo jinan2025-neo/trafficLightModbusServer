@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+test_file/
 
 # Virtual Environment
 venv/
