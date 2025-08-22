@@ -10,6 +10,7 @@ pip install pipenv
 pipenv install  # install dependency from the requirement list of Pipenv file
 pipenv shell    # activate the env
 ```
+
 ## OpenPLC 
 ### Coil Mapping
 Raspberry Pi to OpenPLC mapping: (see default mapping of raspberry to openplc to know exact pin to put)
@@ -42,4 +43,4 @@ SIGNAL_MAP = {
 2. Delete: only admin can delete users.
 
 Q: How does real world system's DB being managed?
-> For now just create a DB that supports at least 3 users: Admin(with highest privilege), guest(with lowest privilege), engineer(with medium privilege).
+> For now just create a DB that supports at least 3 users: Admin(with highest privilege), engineer(with lower privilege).
