@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 """
+The secure version of the simple Modbus TCP traffic light dashboard.
+Secure part:
+- No SSL/TLS (HTTP only) --> Use SSL/TLS termination in front (e.g., Nginx, Caddy)
+- Information leakage via error messages --> Generic error messages
+- Possible way to bypass login (not tested) --> Use flask-login properly
+- No rate limiting / brute-force protection --> limit the login attempts
+
 Flask app: Traffic Light Modbus Dashboard
 
 Features
