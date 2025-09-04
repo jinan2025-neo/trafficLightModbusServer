@@ -165,7 +165,7 @@ def read_traffic_coils(client) -> List[Dict[str, Any]]:
     TODO: Replace with actual pymodbus read_coils() calls based on your mapping.
     """
     # --- BEGIN STUB ---
-    return modbus_func.read_signals(client)
+    return read_signals(client)
     # --- END STUB ---
 
 
