@@ -257,7 +257,7 @@ def get_traffic():
 @login_required
 def write_on_off():
     try:
-        raw = request.form.get("flag") or request.json.get("flag") if request.is_json else None
+        raw = request.form.get("flag") or (request.json.get("flag") if request.is_json else None)
         val = str(raw).lower() in {"1", "true", "on", "yes"}
         ok = on_off_coil(global_client,val)
         if not ok:
@@ -273,10 +273,7 @@ def write_on_off():
 @login_required
 def write_flag():
     try:
-        if request.is_json:
-          raw = request.json.get("flag")
-        else:
-          raw = request.form.get("flag") or None
+        raw = request.form.get("flag") or (request.json.get("flag") if request.is_json else None)
         val = str(raw).lower() in {"1", "true", "on", "yes"}
         ok = on_off_coil(global_client,val)
         if not ok:
