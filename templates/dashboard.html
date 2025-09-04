@@ -75,7 +75,7 @@
     })
       .then(response => response.json())
       .then(data => {
-        document.getElementById('coil-801-status').textContent = 'Updated successfully!';
+        document.getElementById('coil-801-status').textContent = 'Success → ' + data.value;
       })
       .catch(error => {
         document.getElementById('coil-801-status').textContent = 'Error updating coil.';
