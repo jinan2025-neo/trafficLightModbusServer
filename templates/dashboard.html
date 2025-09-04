@@ -63,27 +63,6 @@
         <span id="coil-801-status" class="ms-2 muted"></span>
       </form>
       
-<script>
-  // Handle form submission for coil 801// Flag coil write
-      document.getElementById('coil-801-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const value = document.getElementById('coil-801-value').value;
-        const el = document.getElementById('coil-801-status');
-        el.textContent = 'Writing…';
-        try {
-          const res = await fetch("{{ url_for('write_on_off') }}", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ flag: value })
-          });
-          const json = await res.json();
-          if (!json.ok) throw new Error(json.error || 'Write failed');
-          el.textContent = 'Success → ' + json.value;
-        } catch (err) {
-          el.textContent = 'Error: ' + (err.message || 'Unknown');
-        }
-      });
-</script>
         </div>
       </div>
       <p class="footer small mt-4"><span class="dot" id="hb"></span><span id="hb-text">Connecting…</span></p>
@@ -152,6 +131,26 @@
         el.textContent = 'Writing…';
         try {
           const res = await fetch("{{ url_for('write_flag') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ flag: value })
+          });
+          const json = await res.json();
+          if (!json.ok) throw new Error(json.error || 'Write failed');
+          el.textContent = 'Success → ' + json.value;
+        } catch (err) {
+          el.textContent = 'Error: ' + (err.message || 'Unknown');
+        }
+      });
+      
+      // Handle form submission for coil 801
+      document.getElementById('coil-801-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const value = document.getElementById('coil-801-value').value;
+        const el = document.getElementById('coil-801-status');
+        el.textContent = 'Writing…';
+        try {
+          const res = await fetch("{{ url_for('write_on_off') }}", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ flag: value })
