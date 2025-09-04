@@ -80,10 +80,11 @@ if __name__ == "__main__":
         print("Cannot connect to Modbus server.")
     else:
         try:
-            while True:
-                signals = read_signals(client)
-                print(signals)  # For debugging
-                time.sleep(1)
+            on_off_coil(client, False)  # Turn on the traffic light system
+            # while True:
+            #     signals = read_signals(client)
+            #     print(signals)  # For debugging
+            #     time.sleep(1)
         except KeyboardInterrupt:
             print("\nStopped by user.")
         finally:
