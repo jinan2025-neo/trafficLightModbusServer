@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 # self-defined function that calls pymodbus to read the traffic light coils from the server
-from modbus_func import read_signals, write_flag_coil
+from modbus_func import read_signals, write_flag_coil, on_off_coil
 
 from flask import (
     Flask, render_template_string, request, redirect, url_for,
@@ -250,6 +250,20 @@ Thread(target=modbus_worker, daemon=True).start()
 @app.route('/api/traffic', methods=['GET'])
 def get_traffic():
     return jsonify(modbus_data)
+
+# write the on/off coil (coil 801) to the given boolean value
+@app.route("/write_on_off", methods=["POST"])
+@login_required
+def write_on_off():
+    try:
+        raw = request.form.get("on_off") or request.json.get("on_off") if request.is_json else None
+        val = str(raw).lower() in {"1", "true", "on", "yes"}
+        ok = on_off_coil(global_client,val)
+        if not ok:
+            return jsonify({"ok": False, "error": "Write coil failed"}), 500
+        return jsonify({"ok": True, "value": val})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 @app.route("/write_flag", methods=["POST"]) 
 @login_required

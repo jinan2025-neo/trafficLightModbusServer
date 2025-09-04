@@ -22,16 +22,26 @@ signal_widgets = {}
 layout_order = ['N', 'EW', 'S']
 colors = ['red', 'orange', 'green']
 
+def on_off_coil(client, value):
+    # value: True(on) or False(off)
+    # this will write the value into coil 801 (Run_AM), once write to false, the traffic light will be truned off
+    result = client.write_coil(801, value)
+    if result.isError():
+        print('failed to write to coil 801(Run_AM)')
+        return False
+    else:
+        print('successed to write to coil 801(Run_AM)')
+        return True
 
 def write_flag_coil(client, value):
     '''write the rush mode control flag into the given boolean value'''
     result = client.write_coil(800, value)
 
     if result.isError():
-        print('failed to write to coil 800')
+        print('failed to write to coil 800(mode_flag)')
         return False
     else:
-        print('successed')
+        print('successed to coil 800(mode_flag)')
         return True
 
 def read_signals(client):

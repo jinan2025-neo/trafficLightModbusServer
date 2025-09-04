@@ -50,9 +50,41 @@
             <button type="submit" class="btn btn-primary">Write Coil</button>
             <span id="flag-status" class="ms-2 muted"></span>
           </form>
+          
+      <!-- New form for coil 801 -->
+      <form id="coil-801-form" class="d-flex align-items-center gap-2">
+        <select class="form-select w-auto" id="coil-801-value">
+          <option value="true">ON (True)</option>
+          <option value="false">OFF (False)</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Write Coil</button>
+        <span id="coil-801-status" class="ms-2 muted"></span>
+      </form>
+      
+<script>
+  // Handle form submission for coil 801
+  document.getElementById('coil-801-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+    const value = document.getElementById('coil-801-value').value === 'true';
+    fetch('/toggle_coil_801', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ state: value }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('coil-801-status').textContent = 'Updated successfully!';
+      })
+      .catch(error => {
+        document.getElementById('coil-801-status').textContent = 'Error updating coil.';
+        console.error('Error:', error);
+      });
+  });
+</script>
         </div>
       </div>
-
       <p class="footer small mt-4"><span class="dot" id="hb"></span><span id="hb-text">Connecting…</span></p>
     </div>
 
