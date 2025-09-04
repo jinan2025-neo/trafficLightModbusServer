@@ -277,9 +277,12 @@ def write_on_off():
 @login_required
 def write_flag():
     try:
-        raw = request.form.get("flag") or request.json.get("flag") if request.is_json else None
+        if request.is_json:
+          raw = request.json.get("flag")
+        else:
+          raw = request.form.get("flag") or None
         val = str(raw).lower() in {"1", "true", "on", "yes"}
-        ok = write_flag_coil(global_client,val)
+        ok = on_off_coil(global_client,val)
         if not ok:
             return jsonify({"ok": False, "error": "Write coil failed"}), 500
         return jsonify({"ok": True, "value": val})
