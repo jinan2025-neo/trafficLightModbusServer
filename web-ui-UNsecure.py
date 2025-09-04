@@ -257,16 +257,17 @@ def get_traffic():
 @login_required
 def write_on_off():
     try:
-        data = request.get_json()
-        state = data.get("state")  # This should be True or False
-        if state is None:
-            raise ValueError("Invalid state value")
-        on_off_coil(801, state)  # Write the coil value
-        return jsonify({"success": True, "value": state})
+        raw = request.form.get("flag") or request.json.get("flag") if request.is_json else None
+        val = str(raw).lower() in {"1", "true", "on", "yes"}
+        ok = on_off_coil(global_client,val)
+        if not ok:
+            return jsonify({"ok": False, "error": "Write coil failed"}), 500
+        return jsonify({"ok": True, "value": val})
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"ok": False, "error": str(e)}), 500
 
-        
+
+
 # wrtie the flag coil (coil 800) to the given boolean value
 @app.route("/write_flag", methods=["POST"]) 
 @login_required

@@ -52,6 +52,8 @@
           </form>
           
       <!-- New form for coil 801 -->
+          <h5 class="card-title text-white">Traffic light switch</h5>
+          <p class="muted">Set True to turn on the traffic lights; false to turn off them.</p>
       <form id="coil-801-form" class="d-flex align-items-center gap-2">
         <select class="form-select w-auto" id="coil-801-value">
           <option value="true">ON (True)</option>
@@ -62,26 +64,25 @@
       </form>
       
 <script>
-  // Handle form submission for coil 801
-  document.getElementById('coil-801-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent default form submission
-    const value = document.getElementById('coil-801-value').value === 'true';
-    fetch('/write_on_off', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ state: value }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('coil-801-status').textContent = 'Success → ' + data.value;
-      })
-      .catch(error => {
-        document.getElementById('coil-801-status').textContent = 'Error updating coil.';
-        console.error('Error:', error);
+  // Handle form submission for coil 801// Flag coil write
+      document.getElementById('coil-801-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const value = document.getElementById('coil-801-value').value;
+        const el = document.getElementById('coil-801-status');
+        el.textContent = 'Writing…';
+        try {
+          const res = await fetch("{{ url_for('write_on_off') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ flag: value })
+          });
+          const json = await res.json();
+          if (!json.ok) throw new Error(json.error || 'Write failed');
+          el.textContent = 'Success → ' + json.value;
+        } catch (err) {
+          el.textContent = 'Error: ' + (err.message || 'Unknown');
+        }
       });
-  });
 </script>
         </div>
       </div>
