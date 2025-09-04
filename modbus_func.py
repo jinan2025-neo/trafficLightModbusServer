@@ -1,8 +1,10 @@
 import time
 from pymodbus.client.tcp import ModbusTcpClient
 
+# 
 # Modbus server settings
-MODBUS_SERVER_IP = '10.3.21.91'
+MODBUS_SERVER_IP = '10.3.243.70'
+# MODBUS_SERVER_IP = '10.3.21.91'
 MODBUS_SERVER_PORT = 502
 UNIT_ID = 1
 
