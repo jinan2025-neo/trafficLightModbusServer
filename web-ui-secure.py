@@ -257,7 +257,11 @@ def get_traffic():
 @login_required
 def write_on_off():
     try:
-        raw = request.form.get("flag") or request.json.get("flag") if request.is_json else None
+        # print('request data:',request.data)
+        # print('form data:',request.form)
+        # print('json data:',request.json)
+        # print('raw:',request.form.get("flag"),request.json.get('flag'), request.is_json)
+        raw = request.form.get("state") or request.json.get("state") if request.is_json else None
         val = str(raw).lower() in {"1", "true", "on", "yes"}
         ok = on_off_coil(global_client,val)
         if not ok:
