@@ -80,7 +80,7 @@ if __name__ == "__main__":
         print("Cannot connect to Modbus server.")
     else:
         try:
-            on_off_coil(client, False)  # Turn on the traffic light system
+            on_off_coil(client, True)  # Turn on the traffic light system
             # while True:
             #     signals = read_signals(client)
             #     print(signals)  # For debugging
