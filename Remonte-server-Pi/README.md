@@ -1,5 +1,5 @@
 ## Introduction
-This web app provide a dashboard for the Lego city's traffic light system to both monitoring the coil states and also allowed to switch between the rush mode and unrush mode (default is unrush).
+This web app provide a dashboard for the Lego city's traffic light system to both monitoring the coil states on the remote OpenPLC Runtime and also allowed to switch between the rush mode and unrush mode (default is unrush) and to turn on/off the traffic lights.
 
 
 ## Quick Setup
@@ -41,6 +41,3 @@ SIGNAL_MAP = {
 ### Operation
 1. Create: there will always be a default user with username/password being admin/admin. Only the admin can create users. (now create by hard coding)
 2. Delete: only admin can delete users.
-
-Q: How does real world system's DB being managed?
-> For now just create a DB that supports at least 3 users: Admin(with highest privilege), engineer(with lower privilege).

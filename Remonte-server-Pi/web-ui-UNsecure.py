@@ -258,7 +258,6 @@ def get_traffic():
 def write_on_off():
     try:
         raw = request.form.get("flag") or request.form.get("state") or (request.json.get("flag") or request.json.get("state") if request.is_json else None)
-
         val = str(raw).lower() in {"1", "true", "on", "yes"}
         ok = on_off_coil(global_client,val)
         if not ok:
@@ -314,7 +313,6 @@ def success_page():
     # redirect to the dashboard after displaying the success message
     flash("User added successfully!", "success")
     return redirect(url_for("index"))  # Redirect to the dashboard or another page
-
 
 # ----------------------------------------------------------------------------
 # Entry point

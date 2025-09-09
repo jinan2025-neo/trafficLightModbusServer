@@ -268,7 +268,7 @@ def write_on_off():
 
 
 
-
+# wrtie the flag coil (coil 800) to the given boolean value
 @app.route("/write_flag", methods=["POST"]) 
 @login_required
 def write_flag():
